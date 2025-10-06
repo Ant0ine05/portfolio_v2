@@ -292,7 +292,6 @@ section:nth-child(odd) {
     background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
 }
 
-
 section::after {
     content: '';
     position: absolute;
