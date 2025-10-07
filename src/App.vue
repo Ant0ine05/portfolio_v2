@@ -206,11 +206,7 @@ export default {
         });
 
         // Formulaire
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Message envoyé ! Je vous répondrai rapidement.');
-            this.reset();
-        });
+       
 
         // Animation au scroll
         const observer = new IntersectionObserver((entries) => {

@@ -6,7 +6,7 @@
         <div class="hero-content fade-in">
           <span class="hero-tag">👋 Bienvenue</span>
           <h1>Créateur d'expériences <span class="highlight">numériques</span></h1>
-          <p>Développeur passionné spécialisé dans la création de solutions web modernes, performantes et centrées utilisateur.</p>
+          <p>Développeur passionné spécialisé dans la création de solutions web modernes, performantes et UX design.</p>
           <div class="hero-buttons">
             <a href="#portfolio" class="btn btn-primary">Voir mes projets</a>
             <a href="#contact" class="btn btn-secondary">Me contacter</a>

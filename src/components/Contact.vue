@@ -1,89 +1,115 @@
 <template>
-<div>
-   <section id="contact">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Contact</span>
-                <h2 class="section-title">Travaillons ensemble</h2>
-                <p class="section-subtitle">N'hésitez pas à me contacter pour discuter de votre projet</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">📧</div>
-                        <div class="contact-details">
-                            <h4>Email</h4>
-                            <p>antoine.dalstein@gmail.com</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">📍</div>
-                        <div class="contact-details">
-                            <h4>Localisation</h4>
-                            <p>France</p>
-                        </div>
-                    </div>
+    <div>
+        <section id="contact">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Contact</span>
+                    <h2 class="section-title">Travaillons ensemble</h2>
+                    <p class="section-subtitle">N'hésitez pas à me contacter pour discuter de votre projet</p>
                 </div>
-
-                <form class="contact-form" id="contactForm">
-                    <div class="form-group">
-                        <label for="name">Nom complet</label>
-                        <input type="text" id="name" placeholder="Jean Dupont" required>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>antoine.dalstein@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-details">
+                                <h4>Localisation</h4>
+                                <p>France</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="jean.dupont@exemple.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" placeholder="Parlez-moi de votre projet..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
-                </form>
+                    <form class="contact-form" @submit.prevent="handleSubmit">
+                        <div class="form-group">
+                            <label for="name">Nom complet</label>
+                            <input type="text" id="name" placeholder="Jean Dupont" v-model="form.name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Objet</label>
+                            <input type="text" id="objet" placeholder="Demande d'information, collaboration, etc."
+                                v-model="form.objet" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="jean.dupont@exemple.com" v-model="form.mail"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" placeholder="Parlez-moi de votre projet..." v-model="form.message"
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>
+                    <!-- <pre>{{ form }}</pre> -->
+                </div>
             </div>
-        </div>
-    </section>
-</div>
+        </section>
+    </div>
 </template>
+
 <script>
+import emailjs from "emailjs-com";
+
 export default {
-  name: 'App',
-  components: {
-   
-  },
+    name: 'App',
     data() {
         return {
-    
+            form: {
+                name: "",
+                objet: "",
+                mail: "", // Attention : doit correspondre à from_email dans handleSubmit
+                message: "",
+                date: ""
+            }
         };
     },
-
-    mounted() {
-    
-    },
-
     methods: {
-        async sendEmail() {
-  const response = await fetch('https://URL_DE_TON_BACKEND/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: this.name,
-      email: this.email,
-      message: this.message
-    })
-  });
+        handleSubmit() {
+            const now = new Date();
+            const dateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
-  const data = await response.json();
-  alert(data.message);
-}
+            // Crée un objet qui correspond exactement aux variables de ton template EmailJS
+            const templateParams = {
+                name: this.form.name,         // Utilise {{name}} dans le template
+                email: this.form.mail,        // Utilise {{email}} dans le template
+                objet: this.form.objet,       // Utilise {{objet}} dans le template
+                message: this.form.message,    // Utilise {{message}} dans le template
+                date: dateTime                 // Utilise {{date}} dans le template
+            };
+
+            emailjs.send(
+                "service_syq6n4c",
+                "template_u7hfoon",
+                templateParams,
+                "8NymLaHCgqhEfQTGg"
+            )
+                .then(() => {
+                    alert("Email envoyé avec succès !");
+                    // Reset du formulaire
+                    Object.keys(this.form).forEach(key => {
+                        this.form[key] = "";
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erreur EmailJS:", error);
+                    alert("Erreur lors de l'envoi de l'email.");
+                });
+        }
     }
-  
 }
 </script>
+
 <style scoped>
 section#contact {
     background: var(--bg-dark);
 }
+
 .contact-content {
     max-width: 700px;
     margin: 0 auto;
@@ -170,6 +196,4 @@ section#contact {
     min-height: 150px;
     resize: vertical;
 }
-
-
 </style>
