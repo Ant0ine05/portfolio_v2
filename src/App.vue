@@ -153,7 +153,7 @@ export default {
               "MONGODB",
             ],
             IMAGES: [
-              'droit_daccès2.png',
+              'droit_daccès2flou.png',
               "droit_daccèsmodif2.png",
               "Reglice.png"
             ],
