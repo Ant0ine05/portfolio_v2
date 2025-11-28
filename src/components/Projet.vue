@@ -8,37 +8,47 @@
                 <p class="section-subtitle">Sélection de mes meilleures réalisations</p>
             </div>
             <div  class="projects-grid">
-                <div v-for="(projet, index) in projet.CARDS" :key="index" class="project-card">
+                <div v-for="(projectItem, index) in projet.CARDS" :key="index" class="project-card">
                     <div class="project-image">
-                        <!-- 🚀 -->
-                        <img :src="'assets/'+projet.IMAGES[0]" alt="">
+                        <img :src="'assets/'+projectItem.IMAGES[0]" alt="">
                         <div class="project-overlay"></div>
                     </div>
                     <div class="project-content">
-                        <h3>{{ projet.NAME }}</h3>
+                        <h3>{{ projectItem.NAME }}</h3>
                         
-                        <p>{{ projet.DESCRIPTION }}</p>
+                        <p>{{ projectItem.DESCRIPTION }}</p>
                         <div class="project-tags">
-                            <span v-for="value in projet.LANGAGUES" :key="value" class="tag">{{ value }}</span>
+                            <span v-for="value in projectItem.LANGAGUES" :key="value" class="tag">{{ value }}</span>
                             
                         </div>
-                        <a href="#" class="project-link">Voir le projet →</a>
+                        <button class="project-link" @click="openProject(projectItem)">
+                          Voir le projet →
+                        </button>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </section>
+     
+    <ProjectModal 
+      v-if="selectedProject !== null"
+      :project="selectedProject"
+      @close="closeModal"
+    />
 </div>
 </template>
 <script>
+import ProjectModal from './ProjectModal.vue';
+
 export default {
   name: 'App',
   components: {
-   
+   ProjectModal
   },
     data() {
         return {
-    
+            selectedProject: null
         };
     },
 
@@ -47,7 +57,26 @@ export default {
     },
 
     methods: {
+        openProject(projectItem) {
+            this.selectedProject = {
+                id: projectItem.ID || 1,
+                title: projectItem.NAME,
+                category: projectItem.CATEGORY || 'Développement Web',
+                shortDescription: projectItem.DESCRIPTION,
+                fullDescription: projectItem.FULL_DESCRIPTION || projectItem.DESCRIPTION,
+                images: projectItem.IMAGES.map(img => 'assets/' + img),
+                technologies: projectItem.LANGAGUES || [],
+                duration: projectItem.DURATION || '3 mois',
+                role: projectItem.ROLE || 'Développeur',
+                objective: projectItem.OBJECTIVE || projectItem.DESCRIPTION,
+                link: projectItem.LINK || null,
+                github: projectItem.GITHUB || null
+            };
+        },
 
+        closeModal() {
+            this.selectedProject = null;
+        }
     },
   props:['projet']
 }
@@ -154,8 +183,14 @@ export default {
     align-items: center;
     gap: 0.5rem;
     color: var(--primary);
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
     text-decoration: none;
     font-weight: 600;
+    cursor: pointer;
     transition: gap 0.3s;
 }
 
