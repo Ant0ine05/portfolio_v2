@@ -9,7 +9,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/fr/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/fr/docs/Web/CSS)
 
-[🌐 Voir le site](#portfolio-v2-czf.pages.dev) • [📝 Documentation](#fonctionnalités) • [🐛 Signaler un bug](https://github.com/Ant0ine05/portfolio_v2/issues)
+[🌐 Voir le site](#) • [📝 Documentation](#fonctionnalités) • [🐛 Signaler un bug](https://github.com/Ant0ine05/portfolio_v2/issues)
 
 </div>
 
