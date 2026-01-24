@@ -58,19 +58,35 @@ export default {
 
     methods: {
         openProject(projectItem) {
+            // Si LINK existe, extraire les valeurs appropriées
+            let githubUrl = null;
+            let webLink = null;
+            
+            if (projectItem.LINK) {
+                // Si GITHUB est true et NAMEGIT existe, construire l'URL GitHub
+                if (projectItem.LINK.GITHUB && projectItem.NAMEGIT) {
+                    githubUrl = `https://github.com/Ant0ine05/${projectItem.NAMEGIT}`;
+                }
+                
+                // Si LINK.VALUE est true, prendre le HREF
+                if (projectItem.LINK.LINK?.VALUE && projectItem.LINK.LINK?.HREF) {
+                    webLink = projectItem.LINK.LINK.HREF;
+                }
+            }
+            
             this.selectedProject = {
                 id: projectItem.ID || 1,
                 title: projectItem.NAME,
                 category: projectItem.CATEGORY || 'Développement Web',
                 shortDescription: projectItem.DESCRIPTION,
-                fullDescription: projectItem.FULL_DESCRIPTION || projectItem.DESCRIPTION,
+                fullDescription: projectItem.DESCRIPTIONMODAL || projectItem.DESCRIPTION,
                 images: projectItem.IMAGES.map(img => 'assets/' + img),
                 technologies: projectItem.LANGAGUES || [],
                 duration: projectItem.DURATION || '3 mois',
                 role: projectItem.ROLE || 'Développeur',
                 objective: projectItem.OBJECTIVE || projectItem.DESCRIPTION,
-                link: projectItem.LINK || null,
-                github: projectItem.GITHUB || null
+                link: webLink,
+                github: githubUrl
             };
         },
 

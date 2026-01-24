@@ -137,6 +137,7 @@ export default {
   },
   mounted() {
     this.isOpen = true;
+    console.log(this.project);
   },
   computed: {
     images() {

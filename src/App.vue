@@ -166,6 +166,29 @@ export default {
               }
             },
           },
+          {
+            NAMEGIT: "Tusmo",
+            NAME: "TOMUS (Jeu wordle)",
+            DESCRIPTION: "Réalisation d'un jeu de type Wordle en ligne.",
+            DESCRIPTIONMODAL: "J'ai développé en autonomie TOMUS, un jeu inspiré de Wordle et Motus, où le joueur doit deviner un mot en un nombre limité de tentatives. À chaque proposition, des indices visuels (couleurs) indiquent si les lettres sont bien placées, mal placées ou absentes du mot à trouver. Ce projet personnel m'a permis de travailler sur la logique de jeu, l'interface utilisateur et l'expérience utilisateur. Au-delà du développement, j'ai géré l'intégralité du déploiement en ligne : achat et configuration d'un serveur OVH, acquisition d'un nom de domaine, et paramétrage complet des DNS pour rendre le jeu accessible au public. Ce projet m'a permis de maîtriser l'ensemble de la chaîne de production d'une application web, du développement jusqu'à la mise en production.",
+            LANGAGUES: [
+              "HTML/CSS",
+              "JS",
+            ],
+            IMAGES: [
+              'Tomus_1.png',
+              "Tomus_2.png",
+              "Tomus_3.png"
+            ],
+            LINK: {
+              GITHUB: "https://github.com/Ant0ine05/portfolio_v2.git",
+              ZIP: true,
+              LINK: {
+                VALUE: true,
+                HREF: "https://tomus.fr"
+              }
+            },
+          }
         ]
       },
     };
