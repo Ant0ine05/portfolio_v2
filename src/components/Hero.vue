@@ -3,11 +3,15 @@
     <section class="hero" id="home">
       <Background />
       <div class="container">
-        <div class="hero-content fade-in">
-          <span class="hero-tag">👋 Bienvenue</span>
-          <h1>Créateur d'expériences <span class="highlight">numériques</span></h1>
-          <p>Développeur passionné spécialisé dans la création de solutions web modernes, performantes et UX design.</p>
-          <div class="hero-buttons">
+        <div class="hero-content">
+          <span class="hero-tag animate-in" style="animation-delay: 0.2s">👋 Bienvenue</span>
+          <h1 class="animate-in" style="animation-delay: 0.4s">
+            Créateur d'expériences <span class="highlight">numériques</span>
+          </h1>
+          <p class="animate-in" style="animation-delay: 0.6s">
+            Développeur passionné spécialisé dans la création de solutions web modernes, performantes et UX design.
+          </p>
+          <div class="hero-buttons animate-in" style="animation-delay: 0.8s">
             <a href="#portfolio" class="btn btn-primary">Voir mes projets</a>
             <a href="#contact" class="btn btn-secondary">Me contacter</a>
           </div>
@@ -157,6 +161,11 @@ export default {
   animation: fadeInUp 1s ease;
 }
 
+.animate-in {
+  opacity: 0;
+  animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -165,6 +174,17 @@ export default {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
