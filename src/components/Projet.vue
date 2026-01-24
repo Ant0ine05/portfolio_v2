@@ -10,18 +10,7 @@
             <div  class="projects-grid">
                 <div v-for="(projectItem, index) in projet.CARDS" :key="index" class="project-card">
                     <div class="project-image">
-                        <!-- Loader -->
-                        <div v-if="!loadedImages[index]" class="image-loader">
-                            <div class="spinner"></div>
-                        </div>
-                        <!-- Image -->
-                        <img 
-                            :src="'assets/'+projectItem.IMAGES[0]" 
-                            :alt="projectItem.NAME"
-                            @load="handleImageLoad(index)"
-                            @error="handleImageError(index)"
-                            :class="{ 'loaded': loadedImages[index] === true }"
-                        >
+                        <img :src="'assets/'+projectItem.IMAGES[0]" alt="">
                         <div class="project-overlay"></div>
                     </div>
                     <div class="project-content">
@@ -59,8 +48,7 @@ export default {
   },
     data() {
         return {
-            selectedProject: null,
-            loadedImages: {}
+            selectedProject: null
         };
     },
 
@@ -69,14 +57,6 @@ export default {
     },
 
     methods: {
-        handleImageLoad(index) {
-            this.$set(this.loadedImages, index, true);
-        },
-
-        handleImageError(index) {
-            this.$set(this.loadedImages, index, 'error');
-        },
-
         openProject(projectItem) {
             // Si LINK existe, extraire les valeurs appropriées
             let githubUrl = null;
@@ -153,47 +133,12 @@ export default {
 .project-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.3s ease, opacity 0.5s ease;
-    opacity: 0;
+    object-fit: cover; /* Garantit que l'image couvre tout l'espace */
+    object-position: center; /* Centre l'image */
+    transition: transform 0.3s ease;
 }
-
-.project-image img.loaded {
-    opacity: 1;
-}
-
 .project-card:hover .project-image img {
     transform: scale(1.1);
-}
-
-/* Loader */
-.image-loader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
-    z-index: 1;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(220, 38, 38, 0.1);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 /* Ajustement de l'émoji quand il n'y a pas d'image */
