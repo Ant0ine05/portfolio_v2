@@ -26,7 +26,7 @@
                 <div class="skill-card">
                     <div class="skill-icon">📱</div>
                     <h3>Responsive Design</h3>
-                    <p>Création d'applications responsive qui fonctionnent parfaitement sur tous les appareils.</p>
+                    <p>Création d'applications responsives qui fonctionnent parfaitement sur tous les appareils.</p>
                 </div>
             </div>
         </div>
