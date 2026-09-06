@@ -16,17 +16,9 @@
                 </p>
 
                 <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">2+</div>
-                        <div class="stat-label">Années d'expérience</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">20+</div>
-                        <div class="stat-label">Projets réalisés</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">5+</div>
-                        <div class="stat-label">Site WEB réaliser</div>
+                    <div class="stat-item" v-for="(stat, index) in stats" :key="index">
+                        <div class="stat-number" :ref="'statNumber' + index">0+</div>
+                        <div class="stat-label">{{ stat.label }}</div>
                     </div>
                 </div>
             </div>
@@ -38,22 +30,53 @@
 export default {
   name: 'App',
   components: {
-   
+
   },
     data() {
         return {
-    
+            stats: [
+                { value: 2, label: "Années d'expérience" },
+                { value: 20, label: "Projets réalisés" },
+                { value: 5, label: "Site WEB réaliser" }
+            ],
+            hasAnimated: false
         };
     },
 
     mounted() {
-    
+        const section = this.$el.querySelector('.stats');
+        if (!section) return;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.hasAnimated) {
+                    this.hasAnimated = true;
+                    this.animateCounters();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.4 });
+        observer.observe(section);
     },
 
     methods: {
-
+        animateCounters() {
+            this.stats.forEach((stat, index) => {
+                const target = this.$refs['statNumber' + index];
+                const node = Array.isArray(target) ? target[0] : target;
+                if (!node) return;
+                const duration = 1400;
+                const start = performance.now();
+                const step = (now) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    node.textContent = Math.round(eased * stat.value) + '+';
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            });
+        }
     }
-  
+
 }
 </script>
 <style scoped>
@@ -80,19 +103,20 @@ export default {
     text-align: center;
     padding: 2rem;
     background: var(--bg-card);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
-    transition: all 0.3s;
+    box-shadow: var(--shadow-card);
+    transition: all 0.35s var(--ease-out);
 }
 
 .stat-item:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .stat-number {
     font-size: 2.8rem;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--primary);
     margin-bottom: 0.5rem;
 }

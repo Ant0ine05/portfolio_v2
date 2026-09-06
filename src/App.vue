@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div>
     <!-- Navigation -->
     <Navbarre></Navbarre>
@@ -199,6 +199,16 @@ export default {
   methods: {
 
     webInit() {
+        // Navbar réactive au scroll
+        const nav = document.querySelector('nav');
+        if (nav) {
+            const toggleNavShadow = () => {
+                nav.classList.toggle('scrolled', window.scrollY > 20);
+            };
+            window.addEventListener('scroll', toggleNavShadow, { passive: true });
+            toggleNavShadow();
+        }
+
        // Menu burger
         const burger = document.getElementById('burger');
         const navMenu = document.getElementById('navMenu');
@@ -235,16 +245,17 @@ export default {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.15 });
 
-        document.querySelectorAll('.skill-card, .project-card, .stat-item').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease';
+        document.querySelectorAll(
+            '.skill-card, .project-card, .stat-item, .section-header, .contact-item, .contact-form'
+        ).forEach((el, index) => {
+            el.classList.add('reveal');
+            el.style.transitionDelay = `${(index % 4) * 0.08}s`;
             observer.observe(el);
         });
     }
@@ -254,27 +265,31 @@ export default {
 <style>
 /* ======= VARIABLES & RESET ======= */
 :root {
-    /* Palette Rouge professionnelle */
+    /* Palette Rouge — identité du CV */
     --primary: #dc2626;
     --primary-dark: #b91c1c;
     --primary-light: #ef4444;
-    --accent: #f59e0b;
-    
-    /* Neutres */
-    --bg-dark: #111827;
-    --bg-darker: #0f172a;
-    --bg-card: #1f2937;
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
-    --border: #374151;
-    
+    --accent: #f6a1a1;
+
+    /* Fond clair / cartes blanches, comme le CV */
+    --bg-dark: #f2efe9;
+    --bg-darker: #ffffff;
+    --bg-card: #ffffff;
+    --bg-light: #ffffff;
+    --text-primary: #17171a;
+    --text-secondary: #6b6f76;
+    --border: #ebe7df;
+    --bg-highlight: #ece8e0;
+
     /* Layout */
     --container-width: 1500px;
     --padding: 5%;
-    --bg-gradient-1: linear-gradient(to bottom, #111827, #1f2937);
-    --bg-gradient-2: linear-gradient(to bottom, #1f2937, #111827);
-    --bg-light: #1e293b;
-    --bg-highlight: rgba(220, 38, 38, 0.05);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+    --shadow-card: 0 2px 8px rgba(23, 23, 26, 0.04), 0 16px 40px -12px rgba(23, 23, 26, 0.08);
+    --shadow-card-hover: 0 8px 20px rgba(220, 38, 38, 0.08), 0 24px 48px -16px rgba(23, 23, 26, 0.14);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -283,8 +298,12 @@ export default {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg-dark);
     color: var(--text-primary);
     line-height: 1.6;
@@ -298,34 +317,12 @@ body {
 }
 
 section {
-     padding: 8rem 0;  /* Augmenté pour éviter les coupures */
+    padding: 8rem 0;
     position: relative;
     overflow: hidden;
+    background: var(--bg-dark);
 }
 
-section:nth-child(even) {
-    background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
-}
-
-section:nth-child(odd) {
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
-}
-
-section::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        var(--primary-dark),
-        transparent
-    );
-    opacity: 0.1;
-}
 /* ======= BURGER MENU ======= */
 .burger {
     display: none;
@@ -338,7 +335,8 @@ section::after {
     width: 25px;
     height: 2px;
     background: var(--text-primary);
-    transition: all 0.3s;
+    border-radius: 2px;
+    transition: all 0.3s var(--ease-out);
 }
 
 /* Boutons */
@@ -347,10 +345,10 @@ section::after {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2rem;
-    border-radius: 8px;
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s;
+    transition: all 0.35s var(--ease-out);
     cursor: pointer;
     border: none;
     font-size: 1rem;
@@ -363,8 +361,8 @@ section::after {
 
 .btn-primary:hover {
     background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(220, 38, 38, 0.3);
 }
 
 .btn-secondary {
@@ -376,35 +374,33 @@ section::after {
 .btn-secondary:hover {
     border-color: var(--primary);
     color: var(--primary);
+    transform: translateY(-3px);
 }
 
 /* Sections */
-section {
-    padding: 5rem 0;
-}
-
 .section-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
 }
 
 .section-tag {
     display: inline-block;
-    padding: 0.4rem 1rem;
-    background: rgba(220, 38, 38, 0.1);
+    padding: 0.5rem 1.2rem;
+    background: var(--primary);
     border-radius: 50px;
-    color: var(--primary);
-    font-size: 0.85rem;
+    color: #fff;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 
 .section-title {
     font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 1rem;
+    letter-spacing: -0.02em;
 }
 
 .section-subtitle {
@@ -412,6 +408,25 @@ section {
     color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
+}
+
+/* ======= Reveal au scroll ======= */
+.reveal {
+    opacity: 0;
+    transform: translateY(48px) scale(0.96);
+    filter: blur(6px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out), filter 0.9s var(--ease-out);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+/* ======= Navbar réactive au scroll ======= */
+nav.scrolled {
+    box-shadow: 0 4px 20px rgba(23, 23, 26, 0.06);
 }
 
 /* Responsive */
@@ -422,11 +437,12 @@ section {
         right: -100%;
         width: 70%;
         height: calc(100vh - 70px);
-        background: var(--bg-darker);
+        background: #ffffff;
         flex-direction: column;
         padding: 2rem;
         border-left: 1px solid var(--border);
-        transition: right 0.3s;
+        transition: right 0.3s var(--ease-out);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.06);
     }
 
     .nav-menu.active {
@@ -469,6 +485,6 @@ section {
 }
 
 .fade-in {
-    animation: fadeInUp 0.6s ease;
+    animation: fadeInUp 0.6s var(--ease-out);
 }
 </style>

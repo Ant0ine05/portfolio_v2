@@ -8,7 +8,8 @@
                 <p class="section-subtitle">Sélection de mes meilleures réalisations</p>
             </div>
             <div  class="projects-grid">
-                <div v-for="(projectItem, index) in projet.CARDS" :key="index" class="project-card">
+                <div v-for="(projectItem, index) in projet.CARDS" :key="index" class="project-card"
+                     @mousemove="onCardTilt" @mouseleave="onCardLeave">
                     <div class="project-image">
                         <img :src="'assets/'+projectItem.IMAGES[0]" alt="">
                         <div class="project-overlay"></div>
@@ -92,6 +93,18 @@ export default {
 
         closeModal() {
             this.selectedProject = null;
+        },
+
+        onCardTilt(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-10px)`;
+        },
+
+        onCardLeave(e) {
+            e.currentTarget.style.transform = '';
         }
     },
   props:['projet']
@@ -106,16 +119,17 @@ export default {
 
 .project-card {
     background: var(--bg-card);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     border: 1px solid var(--border);
-    transition: all 0.3s;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.25s var(--ease-out), box-shadow 0.4s var(--ease-out);
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .project-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--primary);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .project-image {
@@ -168,6 +182,7 @@ export default {
 
 .project-content h3 {
     font-size: 1.5rem;
+    font-weight: 700;
     margin-bottom: 0.8rem;
 }
 
@@ -186,12 +201,12 @@ export default {
 
 .tag {
     padding: 0.4rem 1rem;
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: var(--primary-light);
-    font-weight: 500;
+    background: #fff;
+    border: 1.5px solid var(--primary);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 600;
 }
 
 .project-link {

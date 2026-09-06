@@ -46,10 +46,11 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(17, 24, 39, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
     z-index: 1000;
+    transition: box-shadow 0.3s ease;
 }
 
 .nav-content {
@@ -63,9 +64,10 @@ nav {
 
 .logo {
     font-size: 1.4rem;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text-primary);
     text-decoration: none;
+    letter-spacing: -0.02em;
 }
 
 .logo span {
@@ -81,7 +83,8 @@ nav {
 .nav-menu a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     transition: color 0.3s;
     position: relative;
 }

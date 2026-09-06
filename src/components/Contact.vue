@@ -128,19 +128,27 @@ section#contact {
     gap: 1rem;
     padding: 1.5rem;
     background: var(--bg-card);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+
+.contact-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .contact-icon {
     width: 50px;
     height: 50px;
-    background: rgba(220, 38, 38, 0.1);
-    border-radius: 10px;
+    background: var(--primary);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    box-shadow: 0 10px 22px rgba(220, 38, 38, 0.25);
 }
 
 .contact-details h4 {
@@ -148,7 +156,8 @@ section#contact {
     color: var(--text-secondary);
     margin-bottom: 0.3rem;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .contact-details p {
@@ -158,8 +167,9 @@ section#contact {
 .contact-form {
     background: var(--bg-card);
     padding: 2.5rem;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
 }
 
 .form-group {
@@ -177,9 +187,9 @@ section#contact {
 .form-group textarea {
     width: 100%;
     padding: 1rem;
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    background: var(--bg-highlight);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-size: 1rem;
     font-family: inherit;
@@ -190,6 +200,8 @@ section#contact {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
 }
 
 .form-group textarea {

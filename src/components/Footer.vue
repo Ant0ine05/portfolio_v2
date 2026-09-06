@@ -42,6 +42,7 @@ footer {
     padding: 3rem var(--padding);
     border-top: 1px solid var(--border);
     color: var(--text-secondary);
+    background: var(--bg-dark);
 }
 
 .social-links {
@@ -56,19 +57,22 @@ footer {
     height: 45px;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-secondary);
     text-decoration: none;
-    transition: all 0.3s;
+    font-weight: 600;
+    transition: all 0.3s var(--ease-out);
 }
 
 .social-links a:hover {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
 }
 </style>

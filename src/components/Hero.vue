@@ -2,18 +2,25 @@
   <div>
     <section class="hero" id="home">
       <Background />
-      <div class="container">
+      <Hero3D />
+      <div class="container hero-grid">
         <div class="hero-content">
-          <span class="hero-tag animate-in" style="animation-delay: 0.2s">👋 Bienvenue</span>
-          <h1 class="animate-in" style="animation-delay: 0.4s">
+          <span class="hero-tag animate-in" style="animation-delay: 0.1s">DÉVELOPPEUR FULL-STACK</span>
+          <h1 class="animate-in" style="animation-delay: 0.25s">
             Créateur d'expériences <span class="highlight">numériques</span>
           </h1>
-          <p class="animate-in" style="animation-delay: 0.6s">
+          <p class="animate-in" style="animation-delay: 0.4s">
             Développeur passionné spécialisé dans la création de solutions web modernes, performantes et UX design.
           </p>
-          <div class="hero-buttons animate-in" style="animation-delay: 0.8s">
+          <div class="hero-buttons animate-in" style="animation-delay: 0.55s">
             <a href="#portfolio" class="btn btn-primary">Voir mes projets</a>
             <a href="#contact" class="btn btn-secondary">Me contacter</a>
+          </div>
+        </div>
+        <div class="hero-portrait animate-in" style="animation-delay: 0.3s" ref="portrait" @mousemove="onPortraitMove" @mouseleave="onPortraitLeave">
+          <div class="portrait-blob"></div>
+          <div class="portrait-frame" ref="portraitFrame">
+            <img src="/assets/1774604050959.jpg" alt="Antoine Dalstein">
           </div>
         </div>
       </div>
@@ -23,11 +30,41 @@
 
 <script>
 import Background from './Background.vue';
+import Hero3D from './Hero3D.vue';
 
 export default {
   name: 'App',
   components: {
-    Background
+    Background,
+    Hero3D
+  },
+  mounted() {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+  },
+  methods: {
+    onScroll() {
+      const hero = this.$el.querySelector('.hero-content');
+      if (!hero) return;
+      const y = window.scrollY;
+      const fade = Math.max(0, 1 - y / 600);
+      hero.style.opacity = fade;
+      hero.style.transform = `translateY(${y * 0.25}px)`;
+    },
+    onPortraitMove(e) {
+      const frame = this.$refs.portraitFrame;
+      if (!frame) return;
+      const rect = this.$refs.portrait.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      frame.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 16}deg) scale(1.04)`;
+    },
+    onPortraitLeave() {
+      const frame = this.$refs.portraitFrame;
+      if (frame) frame.style.transform = 'rotateY(0) rotateX(0) scale(1)';
+    }
   }
 }
 </script>
@@ -50,34 +87,41 @@ export default {
   padding: 0 5%;
 }
 
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 3rem;
+}
+
 .hero-content {
   max-width: 900px;
 }
 
 .hero-tag {
   display: inline-block;
-  padding: 0.5rem 1.2rem;
-  background: rgba(220, 38, 38, 0.15);
-  border: 1px solid rgba(220, 38, 38, 0.4);
+  padding: 0.55rem 1.3rem;
+  background: var(--primary);
   border-radius: 50px;
-  color: #ef4444;
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   margin-bottom: 1.5rem;
-  backdrop-filter: blur(10px);
-  animation: pulse 3s ease-in-out infinite;
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
 }
 
 .hero h1 {
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 800;
   line-height: 1.1;
+  letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
-  color: #f9fafb;
+  color: var(--text-primary);
 }
 
 .hero .highlight {
-  color: #dc2626;
+  color: var(--primary);
   position: relative;
   display: inline-block;
 }
@@ -85,19 +129,22 @@ export default {
 .hero .highlight::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: 4px;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #dc2626, #f59e0b);
-  animation: shimmer 2s ease-in-out infinite;
+  height: 10px;
+  background: var(--accent);
+  opacity: 0.6;
+  z-index: -1;
+  border-radius: 4px;
 }
 
 .hero p {
   font-size: 1.2rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.7;
+  max-width: 560px;
 }
 
 .hero-buttons {
@@ -106,21 +153,75 @@ export default {
   flex-wrap: wrap;
 }
 
+/* Portrait décoratif, façon en-tête de CV */
+.hero-portrait {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  perspective: 900px;
+}
+
+.portrait-blob {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: var(--accent);
+  opacity: 0.5;
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  animation: blobMorph 10s ease-in-out infinite;
+}
+
+.portrait-frame {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 6px solid #fff;
+  box-shadow: var(--shadow-card);
+  transform-style: preserve-3d;
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  will-change: transform;
+}
+
+.hero-portrait:hover .portrait-frame {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes blobMorph {
+  0%, 100% {
+    border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    border-radius: 58% 42% 37% 63% / 56% 59% 41% 44%;
+    transform: rotate(8deg) scale(1.05);
+  }
+}
+
 .btn {
   padding: 1rem 2rem;
-  border-radius: 8px;
+  border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.35s var(--ease-out);
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: var(--primary);
   color: white;
-  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25);
 }
 
 .btn-primary::before {
@@ -139,21 +240,20 @@ export default {
 }
 
 .btn-primary:hover {
+  background: var(--primary-dark);
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(220, 38, 38, 0.5);
+  box-shadow: 0 15px 35px rgba(220, 38, 38, 0.35);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f9fafb;
-  border: 2px solid rgba(220, 38, 38, 0.3);
-  backdrop-filter: blur(10px);
+  background: #fff;
+  color: var(--text-primary);
+  border: 2px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: rgba(220, 38, 38, 0.1);
-  border-color: #dc2626;
-  color: #dc2626;
+  border-color: var(--primary);
+  color: var(--primary);
   transform: translateY(-3px);
 }
 
@@ -163,7 +263,8 @@ export default {
 
 .animate-in {
   opacity: 0;
-  animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes fadeInUp {
@@ -188,23 +289,39 @@ export default {
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2.5rem;
   }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px 5px rgba(220, 38, 38, 0.2);
-  }
-}
 
-@keyframes shimmer {
-  0%, 100% {
-    transform: translateX(-100%);
+  .hero-content {
+    margin: 0 auto;
   }
-  50% {
-    transform: translateX(100%);
+
+  .hero p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-portrait {
+    order: -1;
+    min-height: 240px;
+  }
+
+  .portrait-frame {
+    width: 200px;
+    height: 200px;
+  }
+
+  .portrait-blob {
+    width: 220px;
+    height: 220px;
   }
 }
 

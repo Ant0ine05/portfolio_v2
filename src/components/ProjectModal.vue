@@ -198,14 +198,14 @@ export default {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border, #ebe7df);
+  border-radius: 24px;
   max-width: 1200px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 60px -12px rgba(23, 23, 26, 0.35);
   position: relative;
 }
 
@@ -214,12 +214,12 @@ export default {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(220, 38, 38, 0.1);
-  border: 1px solid rgba(220, 38, 38, 0.3);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
   color: #dc2626;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -257,10 +257,10 @@ export default {
 .carousel-wrapper {
   width: 100%;
   aspect-ratio: 4/3;
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08), rgba(246, 161, 161, 0.15));
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(220, 38, 38, 0.15);
   position: relative;
 }
 
@@ -304,7 +304,7 @@ export default {
 }
 
 .image-counter {
-  color: #9ca3af;
+  color: #6b6f76;
   font-size: 14px;
   font-weight: 600;
   min-width: 60px;
@@ -356,25 +356,26 @@ export default {
 }
 
 .modal-header {
-  border-bottom: 2px solid rgba(220, 38, 38, 0.2);
+  border-bottom: 2px solid rgba(220, 38, 38, 0.15);
   padding-bottom: 20px;
 }
 
 .modal-title {
   font-size: 2.2rem;
-  font-weight: 700;
-  color: #f9fafb;
+  font-weight: 800;
+  color: #17171a;
   margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
 .modal-subtitle {
-  color: #9ca3af;
+  color: #6b6f76;
   font-size: 1rem;
   font-weight: 500;
 }
 
 .modal-description {
-  color: #d1d5db;
+  color: #3f4147;
   line-height: 1.8;
   font-size: 1rem;
 }
@@ -387,9 +388,9 @@ export default {
 }
 
 .modal-technologies h3 {
-  color: #f9fafb;
+  color: #17171a;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .tech-grid {
@@ -399,27 +400,28 @@ export default {
 }
 
 .tech-tag {
-  background: rgba(220, 38, 38, 0.15);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  color: #ef4444;
+  background: #fff;
+  border: 1.5px solid #dc2626;
+  color: #dc2626;
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s;
 }
 
 .tech-tag:hover {
-  background: rgba(220, 38, 38, 0.25);
+  background: #dc2626;
+  color: #fff;
   transform: translateY(-2px);
 }
 
 /* Details */
 .modal-details {
-  background: rgba(220, 38, 38, 0.05);
+  background: #f2efe9;
   border-left: 3px solid #dc2626;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -432,14 +434,14 @@ export default {
 }
 
 .detail-label {
-  color: #9ca3af;
+  color: #6b6f76;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .detail-value {
-  color: #f9fafb;
-  font-weight: 500;
+  color: #17171a;
+  font-weight: 600;
 }
 
 /* Actions */

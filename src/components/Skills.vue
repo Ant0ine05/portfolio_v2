@@ -67,37 +67,34 @@ export default {
 
 .skill-card {
     padding: 2rem;
-    background: var(--bg-light);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    transform: translateY(0);  /* Position initiale */
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    transition: all 0.35s var(--ease-out);
 }
 
 .skill-card:hover {
-    transform: translateY(-5px);  /* Monte au survol */
-    border-color: var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(145deg, 
-        var(--bg-light) 0%, 
-        var(--bg-card) 100%
-    );
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .skill-icon {
-    width: 60px;
-    height: 60px;
-    background: rgba(220, 38, 38, 0.1);
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    background: var(--primary);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     margin-bottom: 1.5rem;
+    box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
 }
 
 .skill-card h3 {
     font-size: 1.3rem;
+    font-weight: 700;
     margin-bottom: 0.8rem;
 }
 
