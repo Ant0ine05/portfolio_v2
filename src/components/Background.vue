@@ -16,12 +16,6 @@
 
     <!-- Grille subtile -->
     <div class="grid-overlay"></div>
-
-    <!-- Ligne "gribouillis" décorative -->
-    <svg class="squiggle" viewBox="0 0 300 200" fill="none">
-      <path d="M10 100 C 60 20, 140 10, 180 50 S 280 120, 250 170"
-            stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" />
-    </svg>
   </div>
 </template>
 
@@ -127,23 +121,9 @@ export default {
   mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
 }
 
-/* Gribouillis décoratif */
-.squiggle {
-  position: absolute;
-  bottom: 6%;
-  left: 4%;
-  width: 160px;
-  height: auto;
-  opacity: 0.25;
-}
-
 @media (max-width: 768px) {
   .orb {
     filter: blur(50px);
-  }
-
-  .squiggle {
-    width: 100px;
   }
 }
 </style>

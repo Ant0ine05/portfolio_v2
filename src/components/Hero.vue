@@ -1,342 +1,311 @@
 <template>
-  <div>
-    <section class="hero" id="home">
+  <section class="hero" id="home" ref="root">
+    <div class="hero-bg" ref="bg">
       <Background />
       <Hero3D />
-      <div class="container hero-grid">
-        <div class="hero-content">
-          <span class="hero-tag animate-in" style="animation-delay: 0.1s">DÉVELOPPEUR FULL-STACK</span>
-          <h1 class="animate-in" style="animation-delay: 0.25s">
-            Créateur d'expériences <span class="highlight">numériques</span>
-          </h1>
-          <p class="animate-in" style="animation-delay: 0.4s">
-            Développeur passionné spécialisé dans la création de solutions web modernes, performantes et UX design.
-          </p>
-          <div class="hero-buttons animate-in" style="animation-delay: 0.55s">
-            <a href="#portfolio" class="btn btn-primary">Voir mes projets</a>
-            <a href="#contact" class="btn btn-secondary">Me contacter</a>
-          </div>
-        </div>
-        <div class="hero-portrait animate-in" style="animation-delay: 0.3s" ref="portrait" @mousemove="onPortraitMove" @mouseleave="onPortraitLeave">
-          <div class="portrait-blob"></div>
-          <div class="portrait-frame" ref="portraitFrame">
-            <img src="/assets/1774604050959.jpg" alt="Antoine Dalstein">
-          </div>
+    </div>
+
+    <div class="container hero-inner" ref="inner">
+      <p class="eyebrow" ref="eyebrow">
+        <span class="status-dot"></span>
+        {{ profile.role }} · {{ profile.location }}
+      </p>
+
+      <h1 class="hero-title" :aria-label="profile.firstName + ' ' + profile.lastName">
+        <span class="row" aria-hidden="true">
+          <span class="line-mask"><span v-for="(c, i) in firstChars" :key="'f' + i" class="char">{{ c }}</span></span>
+          <span
+            class="capsule"
+            ref="capsule"
+            @mousemove="onCapsuleMove"
+            @mouseleave="onCapsuleLeave"
+          >
+            <img :src="profile.photo" :alt="profile.firstName + ' ' + profile.lastName" ref="photo">
+          </span>
+        </span>
+        <span class="row row-2" aria-hidden="true">
+          <span class="line-mask"><span v-for="(c, i) in lastChars" :key="'l' + i" class="char">{{ c }}</span><span class="char dot">.</span></span>
+        </span>
+      </h1>
+
+      <div class="hero-bottom">
+        <p class="tagline" ref="tagline">{{ profile.tagline }}</p>
+        <div class="hero-buttons" ref="buttons">
+          <a href="#portfolio" class="btn btn-primary" v-magnetic>Voir mes projets <span class="arrow">→</span></a>
+          <a href="#contact" class="btn btn-secondary" v-magnetic>Me contacter</a>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <a href="#about" class="scroll-hint" ref="hint" aria-label="Défiler vers la suite">
+      <span class="scroll-line"></span>
+      <span>Scroll</span>
+    </a>
+  </section>
 </template>
 
 <script>
+import { gsap } from 'gsap';
 import Background from './Background.vue';
 import Hero3D from './Hero3D.vue';
+import { profile } from '../data/portfolio';
 
 export default {
-  name: 'App',
-  components: {
-    Background,
-    Hero3D
+  name: 'HeroSection',
+  components: { Background, Hero3D },
+  props: { ready: Boolean },
+  data() {
+    return {
+      profile,
+      firstChars: profile.firstName.split(''),
+      lastChars: profile.lastName.split('')
+    };
+  },
+  watch: {
+    ready(val) {
+      if (val) this.playIntro();
+    }
   },
   mounted() {
-    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (this.reduced) return;
+
+    this.ctx = gsap.context(() => {
+      gsap.set(this.$el.querySelectorAll('.char'), { yPercent: 115 });
+      gsap.set([this.$refs.eyebrow, this.$refs.tagline, this.$refs.buttons, this.$refs.hint], { opacity: 0, y: 24 });
+      gsap.set(this.$refs.capsule, { clipPath: 'inset(0 50% 0 50% round 999px)' });
+      gsap.set(this.$refs.photo, { scale: 1.4 });
+
+      // Parallax de sortie au scroll
+      gsap.timeline({
+        scrollTrigger: { trigger: this.$refs.root, start: 'top top', end: 'bottom top', scrub: true }
+      })
+        .to(this.$refs.inner, { yPercent: -18, opacity: 0.15, ease: 'none' }, 0)
+        .to(this.$refs.bg, { yPercent: 25, scale: 1.08, ease: 'none' }, 0);
+    }, this.$el);
+
+    if (this.ready) this.playIntro();
   },
   beforeUnmount() {
-    window.removeEventListener('scroll', this.onScroll);
+    if (this.ctx) this.ctx.revert();
   },
   methods: {
-    onScroll() {
-      const hero = this.$el.querySelector('.hero-content');
-      if (!hero) return;
-      const y = window.scrollY;
-      const fade = Math.max(0, 1 - y / 600);
-      hero.style.opacity = fade;
-      hero.style.transform = `translateY(${y * 0.25}px)`;
+    playIntro() {
+      if (this.reduced || this.played) return;
+      this.played = true;
+      this.ctx.add(() => {
+        gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.15 })
+          .to(this.$el.querySelectorAll('.char'), { yPercent: 0, duration: 1.3, stagger: 0.035 })
+          .to(this.$refs.capsule, { clipPath: 'inset(0 0% 0 0% round 999px)', duration: 1.3, ease: 'expo.inOut' }, 0.35)
+          .to(this.$refs.photo, { scale: 1, duration: 1.6 }, 0.35)
+          .to(this.$refs.eyebrow, { opacity: 1, y: 0, duration: 1 }, 0.5)
+          .to([this.$refs.tagline, this.$refs.buttons], { opacity: 1, y: 0, duration: 1, stagger: 0.1 }, 0.7)
+          .to(this.$refs.hint, { opacity: 1, y: 0, duration: 1 }, 1);
+      });
     },
-    onPortraitMove(e) {
-      const frame = this.$refs.portraitFrame;
-      if (!frame) return;
-      const rect = this.$refs.portrait.getBoundingClientRect();
+    onCapsuleMove(e) {
+      if (this.reduced) return;
+      const rect = this.$refs.capsule.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      frame.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 16}deg) scale(1.04)`;
+      gsap.to(this.$refs.photo, { xPercent: x * 10, yPercent: y * 10, scale: 1.12, duration: 0.6, ease: 'power3.out' });
     },
-    onPortraitLeave() {
-      const frame = this.$refs.portraitFrame;
-      if (frame) frame.style.transform = 'rotateY(0) rotateX(0) scale(1)';
+    onCapsuleLeave() {
+      gsap.to(this.$refs.photo, { xPercent: 0, yPercent: 0, scale: 1, duration: 0.8, ease: 'power3.out' });
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
-  padding-top: 80px;
+  padding: 120px 0 90px;
   overflow: hidden;
 }
 
-.container {
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.hero-inner {
   position: relative;
   z-index: 10;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 5%;
 }
 
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+.eyebrow {
+  display: inline-flex;
   align-items: center;
-  gap: 3rem;
-}
-
-.hero-content {
-  max-width: 900px;
-}
-
-.hero-tag {
-  display: inline-block;
-  padding: 0.55rem 1.3rem;
-  background: var(--primary);
-  border-radius: 50px;
-  color: #fff;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 999px;
   font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
+  font-weight: 600;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  backdrop-filter: blur(8px);
 }
 
-.hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-}
-
-.hero .highlight {
-  color: var(--primary);
+.status-dot {
   position: relative;
-  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
 }
 
-.hero .highlight::after {
+.status-dot::after {
   content: '';
   position: absolute;
-  bottom: 4px;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background: var(--accent);
-  opacity: 0.6;
-  z-index: -1;
-  border-radius: 4px;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  animation: ping 2s var(--ease-out) infinite;
 }
 
-.hero p {
-  font-size: 1.2rem;
+@keyframes ping {
+  from { transform: scale(0.6); opacity: 1; }
+  to { transform: scale(2); opacity: 0; }
+}
+
+.hero-title {
+  font-size: clamp(3.4rem, 13vw, 11.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.15em;
+}
+
+.row-2 {
+  justify-content: flex-end;
+  padding-right: 0.05em;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform;
+}
+
+.char.dot {
+  color: var(--primary);
+}
+
+.capsule {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1.55em;
+  height: 0.78em;
+  margin-top: 0.06em;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.capsule img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+
+.tagline {
+  max-width: 440px;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
   color: var(--text-secondary);
-  margin-bottom: 2.5rem;
-  line-height: 1.7;
-  max-width: 560px;
+  line-height: 1.6;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   flex-wrap: wrap;
 }
 
-/* Portrait décoratif, façon en-tête de CV */
-.hero-portrait {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 340px;
-  perspective: 900px;
-}
-
-.portrait-blob {
+.scroll-hint {
   position: absolute;
-  width: 280px;
-  height: 280px;
-  background: var(--accent);
-  opacity: 0.5;
-  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
-  animation: blobMorph 10s ease-in-out infinite;
-}
-
-.portrait-frame {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 6px solid #fff;
-  box-shadow: var(--shadow-card);
-  transform-style: preserve-3d;
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
-  will-change: transform;
-}
-
-.hero-portrait:hover .portrait-frame {
-  box-shadow: var(--shadow-card-hover);
-}
-
-.portrait-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-@keyframes blobMorph {
-  0%, 100% {
-    border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    border-radius: 58% 42% 37% 63% / 56% 59% 41% 44%;
-    transform: rotate(8deg) scale(1.05);
-  }
-}
-
-.btn {
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  text-decoration: none;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 10;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.35s var(--ease-out);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.scroll-line {
   position: relative;
+  width: 1.5px;
+  height: 44px;
+  background: var(--border);
   overflow: hidden;
 }
 
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25);
-}
-
-.btn-primary::before {
+.scroll-line::after {
   content: '';
   position: absolute;
+  left: 0;
+  right: 0;
   top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s;
+  height: 40%;
+  background: var(--primary);
+  animation: scrollLine 1.8s var(--ease-out) infinite;
 }
 
-.btn-primary:hover::before {
-  left: 100%;
+@keyframes scrollLine {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(260%); }
 }
 
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(220, 38, 38, 0.35);
-}
-
-.btn-secondary {
-  background: #fff;
-  color: var(--text-primary);
-  border: 2px solid var(--border);
-}
-
-.btn-secondary:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  transform: translateY(-3px);
-}
-
-.fade-in {
-  animation: fadeInUp 1s ease;
-}
-
-.animate-in {
-  opacity: 0;
-  animation: slideInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(60px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 900px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 2.5rem;
-  }
-
-  .hero-content {
-    margin: 0 auto;
-  }
-
-  .hero p {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-  }
-
-  .hero-portrait {
-    order: -1;
-    min-height: 240px;
-  }
-
-  .portrait-frame {
-    width: 200px;
-    height: 200px;
-  }
-
-  .portrait-blob {
-    width: 220px;
-    height: 220px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero {
-    padding-top: 100px;
-  }
-
-  .hero-buttons {
+@media (max-width: 860px) {
+  .hero-bottom {
     flex-direction: column;
+    align-items: flex-start;
   }
 
-  .btn {
+  .row-2 {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-buttons {
     width: 100%;
-    text-align: center;
+  }
+
+  .hero-buttons .btn {
+    flex: 1;
+  }
+
+  .scroll-hint {
+    display: none;
   }
 }
 </style>

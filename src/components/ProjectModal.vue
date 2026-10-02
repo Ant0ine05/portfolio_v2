@@ -1,11 +1,11 @@
 <template>
   <div>
     <!-- MODAL -->
-    <transition name="modal">
+    <transition name="modal" appear>
       <div v-if="isOpen" class="modal-overlay" @click="closeModal">
         <div class="modal-content" @click.stop>
           <!-- Close Button -->
-          <button class="close-btn" @click="closeModal">
+          <button class="close-btn" aria-label="Fermer" @click="closeModal">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -87,28 +87,12 @@
                 </div>
               </div>
 
-              <!-- Project Details -->
-              <div class="modal-details">
-                <div class="detail-item">
-                  <span class="detail-label">📅 Durée</span>
-                  <span class="detail-value">{{ project.duration }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">👥 Rôle</span>
-                  <span class="detail-value">{{ project.role }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">🎯 Objectif</span>
-                  <span class="detail-value">{{ project.objective }}</span>
-                </div>
-              </div>
-
               <!-- CTA Buttons -->
               <div class="modal-actions">
-                <a v-if="project.link" :href="project.link" target="_blank" class="btn btn-primary">
+                <a v-if="project.link" :href="project.link" target="_blank" rel="noopener" class="btn btn-primary">
                   Voir le site →
                 </a>
-                <a v-if="project.github" :href="project.github" target="_blank" class="btn btn-secondary">
+                <a v-if="project.github" :href="project.github" target="_blank" rel="noopener" class="btn btn-secondary">
                   Code GitHub
                 </a>
               </div>
@@ -137,7 +121,16 @@ export default {
   },
   mounted() {
     this.isOpen = true;
-    console.log(this.project);
+    this.onKey = (e) => {
+      if (e.key === 'Escape') this.closeModal();
+      if (e.key === 'ArrowRight') this.nextImage();
+      if (e.key === 'ArrowLeft') this.prevImage();
+    };
+    window.addEventListener('keydown', this.onKey);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.onKey);
+    document.body.style.overflow = '';
   },
   computed: {
     images() {
@@ -150,7 +143,7 @@ export default {
   methods: {
     closeModal() {
       this.isOpen = false;
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
       setTimeout(() => {
         this.$emit('close');
       }, 300);
@@ -188,8 +181,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(23, 23, 26, 0.6);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -502,10 +495,25 @@ export default {
 
 /* Animations */
 .modal-enter-active, .modal-leave-active {
-  transition: all 0.3s ease;
+  transition: opacity 0.4s ease;
+}
+
+.modal-enter-active .modal-content,
+.modal-leave-active .modal-content {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
 .modal-enter-from, .modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-content {
+  transform: translateY(60px) scale(0.96);
+  opacity: 0;
+}
+
+.modal-leave-to .modal-content {
+  transform: translateY(30px) scale(0.98);
   opacity: 0;
 }
 

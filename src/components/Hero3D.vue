@@ -146,6 +146,11 @@ export default {
       this.initScene();
       window.addEventListener('resize', this.onResize);
       window.addEventListener('mousemove', this.onMouseMove);
+      this.visible = true;
+      this.visibilityObserver = new IntersectionObserver(([entry]) => {
+        this.visible = entry.isIntersecting;
+      });
+      this.visibilityObserver.observe(this.$refs.canvas);
       if (!this.prefersReducedMotion) {
         this.animate();
       } else {
@@ -159,6 +164,7 @@ export default {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('mousemove', this.onMouseMove);
     if (this.rafId) cancelAnimationFrame(this.rafId);
+    if (this.visibilityObserver) this.visibilityObserver.disconnect();
     if (this.scene) {
       this.scene.traverse((obj) => {
         if (obj.geometry) obj.geometry.dispose();
@@ -197,14 +203,20 @@ export default {
       const palette = [0xdc2626, 0xef4444, 0xf6a1a1, 0xfcd9a1, 0xb91c1c, 0xef4444];
       const builders = [makeBrowserWindow, makeDatabase, makeGear, makeHexChip, makeCodeBrackets, makeCloud];
 
+      // Les icônes orbitent sur une ellipse proche des bords pour encadrer le texte
+      const halfH = this.camera.position.z * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+      const halfW = halfH * this.camera.aspect;
+      const rx = halfW * 0.8;
+      const ry = halfH * 0.72;
+      const iconScale = this.camera.aspect < 1 ? 0.55 : 0.72;
+
       this.meshes = builders.map((build, i) => {
         const obj = build(palette[i % palette.length]);
-        obj.scale.setScalar(0.85);
-        const angle = (i / builders.length) * Math.PI * 2;
-        const radius = 5;
+        obj.scale.setScalar(iconScale);
+        const angle = (i / builders.length) * Math.PI * 2 + 0.3;
         obj.position.set(
-          Math.cos(angle) * radius,
-          Math.sin(angle) * radius * 0.55,
+          Math.cos(angle) * rx,
+          Math.sin(angle) * ry,
           (Math.random() - 0.5) * 3
         );
         obj.userData.floatSpeed = 0.35 + Math.random() * 0.4;
@@ -219,8 +231,12 @@ export default {
     },
     animate() {
       this.rafId = requestAnimationFrame(this.animate);
-      const t = this.clock.getElapsedTime();
-      const dt = this.clock.getDelta();
+      if (!this.visible) {
+        this.clock.getDelta();
+        return;
+      }
+      const dt = Math.min(this.clock.getDelta(), 0.1);
+      const t = this.clock.elapsedTime;
 
       this.meshes.forEach((mesh) => {
         mesh.rotation.x += mesh.userData.rotSpeedX * dt;
@@ -228,8 +244,8 @@ export default {
         mesh.position.y += Math.sin(t * mesh.userData.floatSpeed + mesh.userData.floatOffset) * 0.003;
       });
 
-      this.group.rotation.y += (this.mouse.x * 0.35 - this.group.rotation.y) * 0.04;
-      this.group.rotation.x += (-this.mouse.y * 0.25 - this.group.rotation.x) * 0.04;
+      this.group.rotation.y += (this.mouse.x * 0.12 - this.group.rotation.y) * 0.04;
+      this.group.rotation.x += (-this.mouse.y * 0.08 - this.group.rotation.x) * 0.04;
 
       this.renderer.render(this.scene, this.camera);
     },
