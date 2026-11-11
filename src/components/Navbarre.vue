@@ -1,6 +1,6 @@
 <template>
   <div>
-  <header class="nav-wrap" :class="{ hidden: hidden && !menuOpen, scrolled }" ref="nav">
+  <header class="nav-wrap" :class="{ scrolled }" ref="nav">
     <div class="progress" :style="{ transform: `scaleX(${progress})` }"></div>
     <nav class="nav container" aria-label="Navigation principale">
       <a href="#home" class="logo" @click="closeMenu">
@@ -70,7 +70,6 @@ export default {
       ],
       active: '',
       progress: 0,
-      hidden: false,
       scrolled: false,
       menuOpen: false,
       indicatorStyle: { opacity: 0 }
@@ -87,14 +86,11 @@ export default {
   mounted() {
     if (!this.ready) gsap.set(this.$refs.nav, { yPercent: -120 });
 
-    this.lastY = window.scrollY;
     this.onScroll = () => {
       const y = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       this.progress = max > 0 ? y / max : 0;
       this.scrolled = y > 20;
-      this.hidden = y > 400 && y > this.lastY;
-      this.lastY = y;
     };
     window.addEventListener('scroll', this.onScroll, { passive: true });
     window.addEventListener('resize', this.moveIndicator);
@@ -158,10 +154,6 @@ export default {
   right: 0;
   z-index: 1000;
   transition: transform 0.5s var(--ease-out), background 0.3s, box-shadow 0.3s;
-}
-
-.nav-wrap.hidden {
-  transform: translateY(-110%);
 }
 
 .nav-wrap.scrolled {
