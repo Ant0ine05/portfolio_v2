@@ -1,7 +1,7 @@
 <template>
   <div class="app" :class="{ 'is-loading': !loaded }">
     <Preloader v-if="!preloaderGone" @reveal="onReveal" @done="preloaderGone = true" />
-    <CustomCursor />
+    
     <Navbarre :ready="loaded" />
 
     <main>
@@ -21,7 +21,6 @@
 <script>
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Preloader from './components/Preloader.vue';
-import CustomCursor from './components/CustomCursor.vue';
 import Navbarre from './components/Navbarre.vue';
 import Hero from './components/Hero.vue';
 import Marquee from './components/Marquee.vue';
@@ -37,7 +36,6 @@ export default {
   name: 'App',
   components: {
     Preloader,
-    CustomCursor,
     Navbarre,
     Hero,
     Marquee,

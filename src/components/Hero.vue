@@ -205,10 +205,10 @@ export default {
 .capsule {
   display: inline-block;
   flex-shrink: 0;
-  width: 1.55em;
-  height: 0.78em;
+  width: 0.9em;
+  height: 0.9em;
   margin-top: 0.06em;
-  border-radius: 999px;
+  border-radius: 50%;
   overflow: hidden;
   background: var(--ink);
   box-shadow: var(--shadow-card-hover);

@@ -59,6 +59,26 @@ export const interests = ['Appétence IA', 'Sport & Voyages'];
 
 export const experiences = [
   {
+    title: 'Alternance — Développeur Junior',
+    place: 'Gueudet 1880 · Amiens',
+    date: 'Nov. 2026 — Actuellement',
+    points: [
+      "Maintenance et évolution d'une application web interne pour la gestion des véhicules",
+      "Répondre au besoin des utilisateurs en développant de nouvelles fonctionnalités",
+      "Assurer la qualité du code et la performance de l'application"
+    ]
+  },
+  {
+    title: 'CDI — Employé polyvalent',
+    place: "McDonald's · Breteuil",
+    date: 'Mai 2025 — Actuellement',
+    points: [
+      'Travail en équipe dans un environnement dynamique',
+      "Gestion de la pression et des périodes d'affluence",
+      'Contact client au quotidien'
+    ]
+  },
+  {
     title: 'Alternance — Développeur Web Junior',
     place: 'Horloges-Huchez · Ferrières',
     date: 'Sept. 2025 — Juil. 2026',
@@ -66,16 +86,6 @@ export const experiences = [
       "Développement d'une application mobile Ionic pour la gestion des pointages",
       'Gestion et configuration des pointeuses connectées',
       'Traitement des données de pointage entre pointeuse et RegliCe'
-    ]
-  },
-  {
-    title: 'CDI — Employé polyvalent',
-    place: "McDonald's · Breteuil",
-    date: 'Mai 2025 — Présent',
-    points: [
-      'Travail en équipe dans un environnement dynamique',
-      "Gestion de la pression et des périodes d'affluence",
-      'Contact client au quotidien'
     ]
   },
   {
